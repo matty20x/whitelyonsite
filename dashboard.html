@@ -227,15 +227,15 @@
 <main>
   <div class="welcome">Welcome back, <span id="welcomeUser">Crew</span>!</div>
   <div class="grid">
-    <!-- FEATURED PROJECT -->
-    <a href="project-details.html" class="card-link">
-      <div class="card">
-        <h3>🎬 Featured Project</h3>
-        <p>A sci-fi short currently in post-production.</p>
-        <div class="progress"><div class="progress-bar"></div></div>
-        <img src="assets/project-echo.jpg" alt="Project Image" />
-      </div>
-    </a>
+   <!-- 🎬 Featured Project -->
+<div id="featuredProjectCard" class="card">
+  <h3>🎬 Featured Project</h3>
+  <p id="featuredDesc">Loading project...</p>
+  <div class="progress-bar-wrapper" style="background: #222; height: 10px; border-radius: 5px; overflow: hidden; margin-bottom: 1rem;">
+    <div id="featuredProgress" style="height: 100%; background: var(--accent); width: 0%; transition: width 0.3s;"></div>
+  </div>
+  <img id="featuredThumb" src="assets/project-placeholder.jpg" alt="Project Image" style="width:100%;border-radius:8px;" />
+</div>
 
     <!-- TO-DO -->
     <a href="todo.html" class="card-link">
@@ -368,5 +368,24 @@
     observer.observe(card);
   });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const featuredProject = JSON.parse(localStorage.getItem("featuredProject"));
+    if (featuredProject) {
+      const link = document.querySelector(".card-link");
+      const title = document.querySelector(".card h3");
+      const description = document.querySelector(".card p");
+      const progressBar = document.querySelector(".progress-bar");
+      const img = document.querySelector(".card img");
+  
+      link.href = featuredProject.detailsPage || "#";
+      title.textContent = featuredProject.name || "Featured Project";
+      description.textContent = featuredProject.description || "A new project.";
+      progressBar.style.width = featuredProject.progress + "%";
+      img.src = featuredProject.image || "assets/project-placeholder.jpg";
+      img.alt = featuredProject.name || "Project Image";
+    }
+  });
+  </script>  
 </body>
 </html>
