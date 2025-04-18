@@ -3,36 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile – WhiteLyon Productions</title>
+  <title>Profile Settings – WhiteLyon Productions</title>
   <link rel="icon" href="assets/favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0a0a0a;
-      --card: #111;
+      --card: rgba(17, 17, 17, 0.8);
       --accent: #e50914;
       --text: #f0f0f0;
-      --subtext: #bbb;
+      --subtext: #aaa;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .fog {
+      position: absolute;
+      top: 0; left: 0;
+      width: 200%;
+      height: 200%;
+      background: url('assets/fog.gif') repeat-x;
+      opacity: 0.05;
+      pointer-events: none;
+      animation: moveFog 60s linear infinite;
+    }
+    @keyframes moveFog {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 0; }
     }
     header {
-      background: #000;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #222;
       position: sticky;
       top: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #222;
       z-index: 1000;
     }
     .logo-title {
@@ -45,120 +58,119 @@
     }
     nav ul {
       display: flex;
-      gap: 1.5rem;
       list-style: none;
-      margin: 0;
+      gap: 1.5rem;
       padding: 0;
+      margin: 0;
     }
     nav ul li a {
-      text-decoration: none;
       color: white;
+      text-decoration: none;
       font-weight: bold;
-      transition: color 0.3s;
     }
     nav ul li a:hover {
       color: var(--accent);
     }
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
+    .profile-menu {
+      position: relative;
     }
-    .profile-card {
-      background: var(--card);
+    .profile-icon {
+      cursor: pointer;
+      border: 2px solid white;
+      color: white;
+      background: transparent;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .profile-icon:hover {
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 2.5rem;
+      background-color: #111;
+      border-radius: 8px;
+      padding: 1rem;
+      min-width: 160px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+    .dropdown a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+    }
+    .dropdown a:hover {
+      color: var(--accent);
+    }
+    main {
+      max-width: 800px;
+      margin: 3rem auto;
       padding: 2rem;
+      background: var(--card);
       border-radius: 16px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
-      max-width: 500px;
-      width: 100%;
+      box-shadow: 0 0 10px rgba(255,255,255,0.03);
+      position: relative;
+      z-index: 1;
+    }
+    h2 {
       text-align: center;
       margin-bottom: 2rem;
-      animation: fadeIn 0.5s ease;
     }
-    .profile-avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin: 0 auto 1rem;
-      border: 3px solid var(--accent);
-      background: #222;
+    .form-group {
+      margin-bottom: 1.5rem;
     }
-    .profile-avatar img {
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="email"], input[type="password"], textarea {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .profile-name {
-      font-size: 1.5rem;
-      margin: 0.5rem 0;
-    }
-    .profile-role {
-      font-size: 1rem;
-      color: var(--subtext);
-      margin-bottom: 1rem;
-    }
-    .settings-form {
-      background: var(--card);
-      padding: 2rem;
-      border-radius: 16px;
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
-      animation: fadeIn 0.6s ease;
-    }
-    .settings-form input, .settings-form textarea {
-      width: 100%;
-      padding: 0.8rem;
-      background: #222;
-      border: none;
+      background: #1c1c1c;
+      border: 1px solid #333;
       border-radius: 8px;
+      padding: 0.8rem;
       color: white;
-      margin-bottom: 1.2rem;
       font-size: 1rem;
     }
-    .settings-form button {
+    button {
       background: var(--accent);
       color: white;
       border: none;
       padding: 0.8rem 1.5rem;
-      border-radius: 8px;
+      border-radius: 10px;
+      font-weight: bold;
       font-size: 1rem;
       cursor: pointer;
       transition: background 0.3s;
-      width: 100%;
-    }
-    .settings-form button:hover {
-      background: #bf0810;
-    }
-    #successMessage {
-      color: limegreen;
-      text-align: center;
       margin-top: 1rem;
-      font-weight: bold;
+    }
+    button:hover {
+      background: #b40812;
+    }
+    .success-message {
+      background: rgba(0, 128, 0, 0.2);
+      color: limegreen;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
       display: none;
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        gap: 1rem;
-      }
+      text-align: center;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
+<div class="fog"></div>
 
 <header>
   <div class="logo-title">
-    <img src="assets/logo.png" alt="Logo">
-    <h1 style="font-size: 1.3rem;">WhiteLyon Productions</h1>
+    <img src="assets/logo.png" alt="WhiteLyon Logo" />
+    <h2>WhiteLyon Productions</h2>
   </div>
   <nav>
     <ul>
@@ -170,80 +182,105 @@
       <li><a href="finance.html">Finance</a></li>
     </ul>
   </nav>
+  <div class="profile-menu">
+    <button class="profile-icon" onclick="toggleDropdown()">👤 <span id="profileEmail">User</span></button>
+    <div class="dropdown" id="dropdownMenu">
+      <a href="profile.html">View Profile</a>
+      <a href="settings.html">Settings</a>
+      <a href="#" onclick="logout()">Log Out</a>
+    </div>
+  </div>
 </header>
 
 <main>
+  <h2>👤 Profile Settings</h2>
 
-  <div class="profile-card" id="profileCard">
-    <div class="profile-avatar" id="profileAvatar">
-      <img src="assets/user1.jpg" alt="Profile Picture">
-    </div>
-    <div class="profile-name" id="profileName">Matty</div>
-    <div class="profile-role" id="profileRole">Director</div>
+  <div class="form-group">
+    <label for="profileName">Name</label>
+    <input type="text" id="profileName" placeholder="Your name">
   </div>
 
-  <div class="settings-form">
-    <input type="text" id="displayName" placeholder="Display Name">
-    <input type="text" id="jobTitle" placeholder="Job Title">
-    <textarea id="bio" rows="4" placeholder="About You..."></textarea>
-    <input type="file" id="avatarUpload" accept="image/*">
-    <button onclick="saveProfile()">Save Changes</button>
-    <div id="successMessage">✅ Profile Updated Successfully!</div>
+  <div class="form-group">
+    <label for="profileEmailSetting">Email</label>
+    <input type="email" id="profileEmailSetting" disabled>
   </div>
 
+  <div class="form-group">
+    <label for="profileBio">Bio</label>
+    <textarea id="profileBio" placeholder="Tell us something about yourself..."></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="profilePic">Profile Picture</label>
+    <input type="file" id="profilePic" accept="image/*">
+  </div>
+
+  <button onclick="saveProfile()">Save Changes</button>
+  <div class="success-message" id="successMessage">Profile updated successfully!</div>
 </main>
 <script>
-// Load profile data from localStorage when page loads
-window.onload = function() {
-  const savedProfile = JSON.parse(localStorage.getItem("whiteLyonProfile")) || {
-    name: "Matty",
-    role: "Director",
-    bio: "Founder of WhiteLyon Productions.",
-    avatar: "assets/user1.jpg"
-  };
+  const profileEmailDisplay = document.getElementById("profileEmail");
+  const profileNameInput = document.getElementById("profileName");
+  const profileEmailInput = document.getElementById("profileEmailSetting");
+  const profileBioInput = document.getElementById("profileBio");
+  const profilePicInput = document.getElementById("profilePic");
+  const successMessage = document.getElementById("successMessage");
 
-  document.getElementById("profileName").textContent = savedProfile.name;
-  document.getElementById("profileRole").textContent = savedProfile.role;
-  document.getElementById("profileAvatar").innerHTML = `<img src="${savedProfile.avatar}" alt="Profile Picture">`;
-  document.getElementById("displayName").value = savedProfile.name;
-  document.getElementById("jobTitle").value = savedProfile.role;
-  document.getElementById("bio").value = savedProfile.bio;
-};
+  // Load user profile from localStorage
+  const userEmail = localStorage.getItem("loggedInUser");
+  const allUsers = JSON.parse(localStorage.getItem("whiteLyonUsers")) || {};
+  const userData = allUsers[userEmail] || {};
 
-// Save profile data to localStorage
-function saveProfile() {
-  const name = document.getElementById("displayName").value.trim();
-  const role = document.getElementById("jobTitle").value.trim();
-  const bio = document.getElementById("bio").value.trim();
-  const avatarInput = document.getElementById("avatarUpload");
-
-  const savedProfile = JSON.parse(localStorage.getItem("whiteLyonProfile")) || {};
-
-  const reader = new FileReader();
-  if (avatarInput.files[0]) {
-    reader.onload = function(e) {
-      const avatar = e.target.result;
-      updateProfile({ name, role, bio, avatar });
-    };
-    reader.readAsDataURL(avatarInput.files[0]);
-  } else {
-    updateProfile({ name, role, bio, avatar: savedProfile.avatar });
+  if (!userEmail) {
+    window.location.href = "index.html";
   }
-}
 
-// Update DOM and localStorage
-function updateProfile(profile) {
-  document.getElementById("profileName").textContent = profile.name;
-  document.getElementById("profileRole").textContent = profile.role;
-  document.getElementById("profileAvatar").innerHTML = `<img src="${profile.avatar}" alt="Profile Picture">`;
+  profileEmailDisplay.textContent = userEmail;
+  profileEmailInput.value = userEmail;
 
-  localStorage.setItem("whiteLyonProfile", JSON.stringify(profile));
+  if (userData.name) profileNameInput.value = userData.name;
+  if (userData.bio) profileBioInput.value = userData.bio;
 
-  document.getElementById("successMessage").style.display = "block";
-  setTimeout(() => {
-    document.getElementById("successMessage").style.display = "none";
-  }, 3000);
-}
+  function saveProfile() {
+    const name = profileNameInput.value.trim();
+    const bio = profileBioInput.value.trim();
+
+    if (name) userData.name = name;
+    if (bio) userData.bio = bio;
+
+    // If profile picture selected
+    if (profilePicInput.files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        userData.profilePic = e.target.result;
+        allUsers[userEmail] = userData;
+        localStorage.setItem("whiteLyonUsers", JSON.stringify(allUsers));
+        successMessage.style.display = "block";
+        setTimeout(() => { successMessage.style.display = "none"; }, 3000);
+      };
+      reader.readAsDataURL(profilePicInput.files[0]);
+    } else {
+      allUsers[userEmail] = userData;
+      localStorage.setItem("whiteLyonUsers", JSON.stringify(allUsers));
+      successMessage.style.display = "block";
+      setTimeout(() => { successMessage.style.display = "none"; }, 3000);
+    }
+  }
+
+  function toggleDropdown() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  window.addEventListener("click", function(e) {
+    if (!e.target.closest(".profile-menu")) {
+      document.getElementById("dropdownMenu").style.display = "none";
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("rememberedUser");
+    window.location.href = "index.html";
+  }
 </script>
-</body>
-</html>
