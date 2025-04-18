@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Schedule – WhiteLyon Productions</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: rgba(17, 17, 17, 0.75);
+      --accent: #e50914;
+      --text: #f0f0f0;
+      --subtext: #bbb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #222;
+      z-index: 1000;
+      animation: fadeInGlow 1s ease-out forwards;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    }
+    @keyframes fadeInGlow {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+      }
+    }
+    .fog {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('assets/fog.gif') repeat-x;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 0;
+      animation: moveFog 60s linear infinite;
+    }
+    @keyframes moveFog {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 0; }
+    }
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .logo-title img {
+      height: 40px;
+    }
+    .logo-title h1 {
+      font-size: 1.3rem;
+      color: white;
+    }
+    nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      z-index: 1;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      padding: 0;
+      margin: 0;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+    nav ul li a:hover {
+      background: rgba(255, 215, 0, 0.05);
+      color: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+    }
+    .profile-menu {
+      position: relative;
+      z-index: 1;
+    }
+    .profile-icon {
+      cursor: pointer;
+      border: 2px solid white;
+      color: white;
+      background: transparent;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .profile-icon:hover {
+      box-shadow: 0 0 10px var(--accent);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 2.5rem;
+      background-color: #111;
+      border-radius: 8px;
+      padding: 1rem;
+      min-width: 160px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+    .dropdown a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+    }
+    .dropdown a:hover {
+      color: var(--accent);
+    }
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+    .event-widgets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .event-card {
+      background: var(--card);
+      backdrop-filter: blur(6px);
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.03);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .event-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px rgba(255,255,255,0.08);
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .calendar-header button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: #111;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .day-name, .calendar-day {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #222;
+      min-height: 80px;
+    }
+    .day-name {
+      background: #191919;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+    .calendar-day.has-event {
+      position: relative;
+      background: #1a1a1a;
+      cursor: pointer;
+    }
+    .calendar-day.has-event::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .add-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      font-size: 2rem;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: #111;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      text-align: center;
+    }
+    .modal.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    .close-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    @media (max-width: 768px) {
+      .day-name, .calendar-day {
+        padding: 0.5rem;
+        min-height: 60px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="fog"></div>
+
+<header>
+  <div class="logo-title">
+    <img src="assets/logo.png" alt="WhiteLyon Logo" />
+    <h1>WhiteLyon Productions</h1>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="dashboard.html">Home</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contacts.html">Contacts</a></li>
+      <li><a href="inspiration.html">Inspiration</a></li>
+      <li><a href="finance.html">Finance</a></li>
+    </ul>
+  </nav>
+  <div class="profile-menu">
+    <button class="profile-icon" onclick="toggleDropdown()">👤 <span id="profileEmail">User</span></button>
+    <div class="dropdown" id="dropdownMenu">
+      <a href="profile.html">View Profile</a>
+      <a href="#">Settings</a>
+      <a href="#" onclick="logout()">Log Out</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h2>Production Schedule</h2>
+
+  <div class="event-widgets" id="eventWidgets"></div>
+
+  <div class="calendar-header">
+    <button onclick="prevMonth()">← Prev</button>
+    <h3 id="monthYear"></h3>
+    <button onclick="nextMonth()">Next →</button>
+  </div>
+
+  <div class="calendar-grid" id="calendarGrid"></div>
+
+  <button class="add-button" onclick="openAddModal()">＋</button>
+
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</main>
+
+<script>
+const user = localStorage.getItem("loggedInUser");
+if (!user) window.location.href = "index.html";
+
+if (localStorage.getItem("loggedInUser")) {
+  document.getElementById("profileEmail").textContent = localStorage.getItem("loggedInUser");
+}
+
+function toggleDropdown() {
+  const menu = document.getElementById("dropdownMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+window.addEventListener("click", function(e) {
+  if (!e.target.closest(".profile-menu")) {
+    document.getElementById("dropdownMenu").style.display = "none";
+  }
+});
+
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  localStorage.removeItem("rememberedUser");
+  window.location.href = "index.html";
+}
+
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+let events = JSON.parse(localStorage.getItem("whiteLyonFullEvents")) || [];
+
+const monthYear = document.getElementById("monthYear");
+const calendarGrid = document.getElementById("calendarGrid");
+const eventWidgets = document.getElementById("eventWidgets");
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modalContent");
+
+function renderCalendar(month, year) {
+  calendarGrid.innerHTML = "";
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startDay = (firstDay.getDay() + 6) % 7; // Monday start
+
+  monthYear.textContent = `${firstDay.toLocaleString('default', { month: 'long' })} ${year}`;
+
+  const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  dayNames.forEach(day => {
+    const div = document.createElement("div");
+    div.className = "day-name";
+    div.textContent = day;
+    calendarGrid.appendChild(div);
+  });
+
+  for (let i = 0; i < startDay; i++) {
+    const blank = document.createElement("div");
+    blank.className = "calendar-day";
+    calendarGrid.appendChild(blank);
+  }
+
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+    const dayDate = new Date(year, month, i);
+    const dateStr = dayDate.toISOString().split('T')[0];
+    const div = document.createElement("div");
+    div.className = "calendar-day";
+    div.textContent = i;
+
+    const dayEvents = events.filter(e => e.date.startsWith(dateStr));
+    if (dayEvents.length) {
+      div.classList.add("has-event");
+      div.addEventListener("click", () => openDayModal(dayEvents));
+    }
+
+    calendarGrid.appendChild(div);
+  }
+}
+
+function renderEventWidgets() {
+  eventWidgets.innerHTML = "";
+  const now = new Date();
+  const upcoming = events
+    .filter(e => new Date(e.date) >= now)
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 5);
+
+  if (upcoming.length === 0) {
+    eventWidgets.innerHTML = "<p>No upcoming events.</p>";
+    return;
+  }
+
+  upcoming.forEach(e => {
+    const div = document.createElement("div");
+    div.className = "event-card";
+    div.innerHTML = `
+      <h4>${e.title}</h4>
+      <p><small>${e.project}</small></p>
+      <p>${new Date(e.date).toLocaleString()}</p>
+    `;
+    eventWidgets.appendChild(div);
+  });
+}
+
+function openDayModal(dayEvents) {
+  modalContent.innerHTML = `
+    <h3>${new Date(dayEvents[0].date).toLocaleDateString()}</h3>
+    ${dayEvents.map(e => `
+      <p><strong>${e.title}</strong><br><small>${e.project}</small><br>${new Date(e.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+      <p>${e.description}</p>
+      <hr>
+    `).join('')}
+    <button class="close-btn" onclick="closeModal()">Close</button>
+  `;
+  modal.classList.add("show");
+}
+
+function openAddModal() {
+  modalContent.innerHTML = `
+    <h3>Add New Event</h3>
+    <input type="text" id="newTitle" placeholder="Event Title" style="margin-bottom:10px;width:90%;" /><br>
+    <input type="text" id="newProject" placeholder="Project Name" style="margin-bottom:10px;width:90%;" /><br>
+    <input type="datetime-local" id="newDate" style="margin-bottom:10px;width:90%;" /><br>
+    <textarea id="newDesc" placeholder="Description" style="margin-bottom:10px;width:90%;height:60px;"></textarea><br>
+    <button class="close-btn" onclick="saveNewEvent()">Save</button>
+    <br><br>
+    <button class="close-btn" onclick="closeModal()">Cancel</button>
+  `;
+  modal.classList.add("show");
+}
+
+function saveNewEvent() {
+  const title = document.getElementById("newTitle").value;
+  const project = document.getElementById("newProject").value;
+  const date = document.getElementById("newDate").value;
+  const description = document.getElementById("newDesc").value;
+
+  if (title && project && date) {
+    events.push({ title, project, date, description });
+    localStorage.setItem("whiteLyonFullEvents", JSON.stringify(events));
+    closeModal();
+    renderCalendar(currentMonth, currentYear);
+    renderEventWidgets();
+  } else {
+    alert("Please fill in all fields.");
+  }
+}
+
+function closeModal() {
+  modal.classList.remove("show");
+}
+
+function nextMonth() {
+  currentMonth++;
+  if (currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+  }
+  renderCalendar(currentMonth, currentYear);
+}
+
+function prevMonth() {
+  currentMonth--;
+  if (currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+  }
+  renderCalendar(currentMonth, currentYear);
+}
+
+renderCalendar(currentMonth, currentYear);
+renderEventWidgets();
+</script>
+
+</body>
+</html>

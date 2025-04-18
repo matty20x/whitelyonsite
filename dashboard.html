@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – WhiteLyon Productions</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: rgba(17, 17, 17, 0.7);
+      --accent: #e50914;
+      --text: #f0f0f0;
+      --subtext: #bbb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      z-index: 1000;
+      border-bottom: 1px solid #222;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+      animation: fadeInGlow 1s ease-out forwards;
+    }
+    @keyframes fadeInGlow {
+      from { opacity: 0; transform: translateY(-10px); box-shadow: 0 0 5px rgba(255, 255, 255, 0); }
+      to { opacity: 1; transform: translateY(0); box-shadow: 0 0 20px rgba(255, 255, 255, 0.05); }
+    }
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-title img {
+      height: 40px;
+    }
+    .logo-title h1 {
+      font-size: 1.3rem;
+      color: white;
+    }
+    nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      padding: 0;
+      margin: 0;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+    nav ul li a:hover {
+      background: rgba(255, 215, 0, 0.05);
+      color: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+    }
+    .profile-menu {
+      position: relative;
+    }
+    .profile-icon {
+      cursor: pointer;
+      border: 2px solid white;
+      color: white;
+      background: transparent;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+    .profile-icon:hover {
+      box-shadow: 0 0 10px var(--accent);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 2.5rem;
+      background-color: #111;
+      border-radius: 8px;
+      padding: 1rem;
+      min-width: 160px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+    .dropdown a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+    }
+    .dropdown a:hover {
+      color: var(--accent);
+    }
+    .fog {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('assets/fog.gif') repeat-x;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 0;
+      animation: moveFog 60s linear infinite;
+    }
+    @keyframes moveFog {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 0; }
+    }
+    main {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .welcome {
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    .card {
+      background-color: var(--card);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.03);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .card:hover {
+      transform: translateY(-6px) scale(1.015);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.08);
+    }
+    .chat-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="fog"></div>
+
+  <script>
+    const user = localStorage.getItem("loggedInUser");
+    if (!user) window.location.href = "index.html";
+  </script>
+
+<header>
+  <div class="logo-title">
+    <img src="assets/logo.png" alt="WhiteLyon Logo" />
+    <h1>WhiteLyon Productions</h1>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="dashboard.html">Home</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contacts.html">Contacts</a></li>
+      <li><a href="inspiration.html">Inspiration</a></li>
+      <li><a href="finance.html">Finance</a></li>
+    </ul>
+  </nav>
+  <div class="profile-menu">
+    <button class="profile-icon" onclick="toggleDropdown()">👤 <span id="profileEmail">User</span></button>
+    <div class="dropdown" id="dropdownMenu">
+      <a href="profile.html">View Profile</a>
+      <a href="#">Settings</a>
+      <a href="#" onclick="logout()">Log Out</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="welcome">Welcome back, <span id="welcomeUser">Crew</span>!</div>
+  <div class="grid">
+    <!-- FEATURED PROJECT -->
+    <a href="project-details.html" class="card-link">
+      <div class="card">
+        <h3>🎬 Featured Project</h3>
+        <p>A sci-fi short currently in post-production.</p>
+        <div class="progress"><div class="progress-bar"></div></div>
+        <img src="assets/project-echo.jpg" alt="Project Image" />
+      </div>
+    </a>
+
+    <!-- TO-DO -->
+    <a href="todo.html" class="card-link">
+      <div class="card">
+        <h3>✅ To-Do List</h3>
+        <p>Manage your tasks and track progress.</p>
+      </div>
+    </a>
+
+    <!-- SCHEDULE -->
+    <a href="schedule.html" class="card-link">
+      <div class="card">
+        <h3>📅 Upcoming Schedule</h3>
+        <ul id="upcomingEventsList">
+          <li>Loading upcoming events...</li>
+        </ul>
+      </div>
+    </a>
+
+    <!-- LATEST UPDATES -->
+    <a href="updates.html" class="card-link">
+      <div class="card">
+        <h3>🔔 Latest Updates</h3>
+        <ul>
+          <li>🎧 New playlist added — Apr 8</li>
+          <li>🎬 Storyboard uploaded — Apr 9</li>
+          <li>📸 Camera test scheduled — Apr 11</li>
+        </ul>
+      </div>
+    </a>
+
+    <!-- QUICK NOTES -->
+    <a href="quick-notes.html" class="card-link">
+      <div class="card">
+        <h3>📝 Quick Notes</h3>
+        <textarea id="quickNotes" placeholder="Write something..."></textarea>
+      </div>
+    </a>
+
+    <!-- ACTIVITY LOG -->
+    <a href="activity-log.html" class="card-link">
+      <div class="card">
+        <h3>📊 Activity Log</h3>
+        <ul id="activityLog">
+          <li>No recent activity yet.</li>
+        </ul>
+      </div>
+    </a>
+  </div>
+</main>
+
+<button class="chat-icon" onclick="window.location.href='contacts.html'">💬</button>
+
+<script>
+  if (localStorage.getItem("loggedInUser")) {
+    document.getElementById("welcomeUser").textContent = localStorage.getItem("loggedInUser");
+    document.getElementById("profileEmail").textContent = localStorage.getItem("loggedInUser");
+  }
+
+  function toggleDropdown() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  window.addEventListener("click", function(e) {
+    if (!e.target.closest(".profile-menu")) {
+      document.getElementById("dropdownMenu").style.display = "none";
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("rememberedUser");
+    window.location.href = "index.html";
+  }
+
+  const notesField = document.getElementById("quickNotes");
+  const savedNote = localStorage.getItem("whiteLyonNotes") || "";
+  notesField.value = savedNote;
+  notesField.addEventListener("input", () => {
+    localStorage.setItem("whiteLyonNotes", notesField.value);
+  });
+
+  const activityLog = document.getElementById("activityLog");
+  let activityData = JSON.parse(localStorage.getItem("whiteLyonActivity")) || [];
+
+  function logActivity(action) {
+    const entry = `${new Date().toLocaleString()}: ${action}`;
+    activityData.unshift(entry);
+    if (activityData.length > 5) activityData.pop();
+    localStorage.setItem("whiteLyonActivity", JSON.stringify(activityData));
+    renderActivity();
+  }
+
+  function renderActivity() {
+    if (activityData.length === 0) {
+      activityLog.innerHTML = "<li>No recent activity yet.</li>";
+      return;
+    }
+    activityLog.innerHTML = activityData.map(item => `<li>${item}</li>`).join("");
+  }
+
+  renderActivity();
+
+  function loadUpcomingEvents() {
+    const list = document.getElementById("upcomingEventsList");
+    const events = JSON.parse(localStorage.getItem("whiteLyonFullEvents")) || [];
+    const now = new Date();
+    const upcoming = events.filter(e => new Date(e.start) >= now)
+      .sort((a, b) => new Date(a.start) - new Date(b.start))
+      .slice(0, 5);
+    list.innerHTML = upcoming.length ? upcoming.map(e => {
+      const date = new Date(e.start).toLocaleString();
+      return `<li><strong>${e.title}</strong> – <em>${e.project}</em><br><small>${date}</small></li>`;
+    }).join("") : "<li>No upcoming events.</li>";
+  }
+
+  loadUpcomingEvents();
+
+  // Scroll animation for dashboard cards
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card').forEach(card => {
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+/* dashboard.css */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #0c0c0c;
+  color: #f0f0f0;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #000;
+  border-bottom: 1px solid #333;
+}
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.logo-title img {
+  height: 40px;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+nav a:hover {
+  color: gold;
+}
+.profile-menu {
+  position: relative;
+}
+.profile-icon {
+  border: 2px solid white;
+  background: transparent;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 2.5rem;
+  background-color: #111;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.dropdown a {
+  color: white;
+  display: block;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+}
+.dropdown a:hover {
+  color: gold;
+}
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+.welcome {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 2rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.card {
+  background-color: #111;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.03);
+}
+.card h3 {
+  margin-top: 0;
+}
+.progress {
+  background: #222;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+.progress-bar {
+  height: 100%;
+  background: gold;
+  width: 65%;
+}
+textarea, input {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+}
+.chat-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: gold;
+  color: black;
+  border: none;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+}

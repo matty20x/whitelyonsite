@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contacts – WhiteLyon Productions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: rgba(17, 17, 17, 0.85);
+      --accent: #e50914;
+      --text: #f0f0f0;
+      --subtext: #bbb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #222;
+    }
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-title img {
+      height: 40px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav ul li a:hover {
+      color: var(--accent);
+    }
+    .profile-menu {
+      position: relative;
+    }
+    .profile-icon {
+      cursor: pointer;
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 2.5rem;
+      background-color: #111;
+      border-radius: 8px;
+      padding: 1rem;
+      min-width: 160px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .dropdown a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+    }
+    .dropdown a:hover {
+      color: var(--accent);
+    }
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .user-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    .user-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255,255,255,0.05);
+      transition: transform 0.3s ease;
+    }
+    .user-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+    .user-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 2px solid var(--accent);
+    }
+    .user-card h3 {
+      margin-bottom: 0.5rem;
+    }
+    .user-card p {
+      color: var(--subtext);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="assets/logo.png" alt="WhiteLyon Logo" />
+      <h1 style="font-size: 1.2rem;">WhiteLyon Productions</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Home</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="contacts.html">Contacts</a></li>
+        <li><a href="inspiration.html">Inspiration</a></li>
+        <li><a href="finance.html">Finance</a></li>
+      </ul>
+    </nav>
+    <div class="profile-menu">
+      <button class="profile-icon" onclick="toggleDropdown()">👤 <span id="profileEmail">User</span></button>
+      <div class="dropdown" id="dropdownMenu">
+        <a href="profile.html">View Profile</a>
+        <a href="#">Settings</a>
+        <a href="#" onclick="logout()">Log Out</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>📇 Contacts</h1>
+    <div class="user-grid" id="userGrid">
+      <!-- User cards will be injected here -->
+    </div>
+  </main>
+  <script>
+    function toggleDropdown() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+  
+    window.addEventListener("click", function(e) {
+      if (!e.target.closest(".profile-menu")) {
+        document.getElementById("dropdownMenu").style.display = "none";
+      }
+    });
+  
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      localStorage.removeItem("rememberedUser");
+      window.location.href = "index.html";
+    }
+  
+    // Load and render real users
+    function renderUsers() {
+      const grid = document.getElementById("userGrid");
+      const users = JSON.parse(localStorage.getItem("whiteLyonUsers")) || {};
+  
+      grid.innerHTML = "";
+  
+      const approvedUsers = Object.keys(users)
+        .filter(email => users[email].approved)
+        .map(email => ({
+          email,
+          name: users[email].name || "Unnamed User",
+          avatar: users[email].avatar || "assets/default-avatar.png"
+        }));
+  
+      if (approvedUsers.length === 0) {
+        grid.innerHTML = "<p style='text-align:center;opacity:0.7;'>No contacts yet. New users will appear here after signup + approval!</p>";
+        return;
+      }
+  
+      approvedUsers.forEach(user => {
+        const card = document.createElement("div");
+        card.className = "user-card";
+        card.innerHTML = `
+          <img src="${user.avatar}" alt="${user.name}">
+          <h3>${user.name}</h3>
+          <p>${user.email}</p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+  
+    if (localStorage.getItem("loggedInUser")) {
+      document.getElementById("profileEmail").textContent = localStorage.getItem("loggedInUser");
+    }
+  
+    renderUsers();
+  </script>
+  
+  </body>
+  </html>
+  

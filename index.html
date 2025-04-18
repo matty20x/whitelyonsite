@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WhiteLyon Productions – Login</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: white;
+      font-family: 'Montserrat', Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fog-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(rgba(255,255,255,0.03), transparent 60%);
+      animation: fogMove 60s linear infinite;
+      z-index: 0;
+      opacity: 0.12;
+    }
+
+    @keyframes fogMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-25%, -25%); }
+    }
+
+    .login-box {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(17, 17, 17, 0.85);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.08);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeInUp 1s ease forwards;
+      backdrop-filter: blur(10px);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      height: 80px;
+      margin-bottom: 1.5rem;
+      animation: pulseLogo 4s ease-in-out infinite;
+    }
+
+    @keyframes pulseLogo {
+      0% { filter: drop-shadow(0 0 5px white); }
+      50% { filter: drop-shadow(0 0 15px white); }
+      100% { filter: drop-shadow(0 0 5px white); }
+    }
+
+    .typewriter {
+      font-size: 1rem;
+      font-style: italic;
+      opacity: 0.8;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid white;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto 1.5rem;
+      animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent; }
+      50% { border-color: white; }
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 1rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #222;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      justify-content: flex-start;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: #e50914;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      color: white;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #b40610;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .links {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .links a {
+      color: #ccc;
+      text-decoration: none;
+      margin: 0 0.5rem;
+    }
+
+    .links a:hover {
+      color: #e50914;
+    }
+
+    .audio-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid #555;
+      border-radius: 50%;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    @media (max-width: 500px) {
+      .logo {
+        height: 60px;
+      }
+      .login-box {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="fog-bg"></div>
+
+  <div class="login-box">
+    <img src="assets/logo.png" alt="WhiteLyon Logo" class="logo" />
+    <div class="typewriter">Welcome to WhiteLyon Productions...</div>
+    <h1>Staff Login</h1>
+    <form id="loginForm" onsubmit="login(); return false;">
+      <label for="email">Email</label>
+      <input type="text" id="email" placeholder="Enter your email" />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Password" />
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="showPassword" />
+        <label for="showPassword">Show Password</label>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="rememberMe" />
+        <label for="rememberMe">Remember Me</label>
+      </div>
+
+      <button type="submit">Log In</button>
+    </form>
+
+    <p class="error" id="errorText"></p>
+
+    <div class="links">
+      <a href="create.html">Create Account</a> | 
+      <a href="reset.html">Forgot Password?</a>
+    </div>
+  </div>
+
+  <div class="audio-toggle" onclick="toggleAudio()">🔊</div>
+
+  <audio id="ambientAudio" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_70e7bfb1f1.mp3?filename=cinematic-ambient-112131.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="successSound" src="assets/login-success.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="assets/login-error.mp3" preload="auto"></audio>
+  <script>
+    if (!localStorage.getItem("whiteLyonUsers")) {
+      localStorage.setItem("whiteLyonUsers", JSON.stringify({}));
+    }
+
+    // Auto-login if remembered
+    const remembered = localStorage.getItem("rememberedUser");
+    if (remembered) {
+      const users = JSON.parse(localStorage.getItem("whiteLyonUsers"));
+      if (users[remembered] && users[remembered].approved) {
+        localStorage.setItem("loggedInUser", remembered);
+        window.location.href = "dashboard.html";
+      }
+    }
+
+    // Toggle password visibility
+    document.getElementById("showPassword").addEventListener("change", function() {
+      const passInput = document.getElementById("password");
+      passInput.type = this.checked ? "text" : "password";
+    });
+
+    // Submit on Enter key
+    document.addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        document.getElementById("loginForm").dispatchEvent(new Event("submit"));
+      }
+    });
+
+    function login() {
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const errorText = document.getElementById("errorText");
+      const users = JSON.parse(localStorage.getItem("whiteLyonUsers"));
+
+      if (users[email] && users[email].approved && users[email].password === password) {
+        localStorage.setItem("loggedInUser", email);
+        if (document.getElementById("rememberMe").checked) {
+          localStorage.setItem("rememberedUser", email);
+        }
+        document.getElementById("successSound").play();
+        window.location.href = "dashboard.html";
+      } else {
+        errorText.textContent = "Invalid credentials or account not approved.";
+        document.getElementById("errorSound").play();
+      }
+    }
+
+    function toggleAudio() {
+      const ambient = document.getElementById("ambientAudio");
+      ambient.paused ? ambient.play() : ambient.pause();
+    }
+  </script>
+</body>
+</html>

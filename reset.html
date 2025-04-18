@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reset Password – WhiteLyon</title>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fog-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(rgba(255,255,255,0.03), transparent 60%);
+      animation: fogMove 60s linear infinite;
+      z-index: 0;
+      opacity: 0.12;
+    }
+
+    @keyframes fogMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-25%, -25%); }
+    }
+
+    .reset-box {
+      position: relative;
+      z-index: 1;
+      background-color: #111;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      width: 100%;
+      max-width: 400px;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      background-color: #222;
+      color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background-color: red;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #cc0000;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .message.success {
+      color: limegreen;
+    }
+
+    .message.error {
+      color: red;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      color: #aaa;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .back:hover {
+      color: red;
+    }
+
+    @media (max-width: 500px) {
+      .reset-box {
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="fog-bg"></div>
+
+  <div class="reset-box">
+    <h1>Reset Password</h1>
+
+    <label for="resetEmail">Email</label>
+    <input type="email" id="resetEmail" placeholder="your@email.com" />
+
+    <label for="newPassword">New Password</label>
+    <input type="password" id="newPassword" placeholder="New password" />
+
+    <button onclick="resetPassword()">Reset Password</button>
+
+    <p id="resetMessage" class="message"></p>
+
+    <a class="back" href="index.html">← Back to Login</a>
+  </div>
+
+  <script>
+    function resetPassword() {
+      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+      const newPassword = document.getElementById("newPassword").value;
+      const message = document.getElementById("resetMessage");
+
+      if (!email || !newPassword) {
+        message.textContent = "Please enter both fields.";
+        message.className = "message error";
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("whiteLyonUsers") || "{}");
+
+      if (!users[email]) {
+        message.textContent = "No account found with that email.";
+        message.className = "message error";
+        return;
+      }
+
+      users[email].password = newPassword;
+      localStorage.setItem("whiteLyonUsers", JSON.stringify(users));
+
+      message.textContent = "Password reset successful! Redirecting...";
+      message.className = "message success";
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

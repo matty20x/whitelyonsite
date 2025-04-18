@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account – WhiteLyon</title>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fog-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(rgba(255,255,255,0.03), transparent 60%);
+      animation: fogMove 60s linear infinite;
+      z-index: 0;
+      opacity: 0.12;
+    }
+
+    @keyframes fogMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-25%, -25%); }
+    }
+
+    .form-box {
+      position: relative;
+      z-index: 1;
+      background-color: #111;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+      width: 100%;
+      max-width: 400px;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.6rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #222;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background-color: red;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #cc0000;
+    }
+
+    .message {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 500px) {
+      .form-box {
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="fog-bg"></div>
+
+  <div class="form-box">
+    <h1>Create Account</h1>
+
+    <label for="name">Full Name</label>
+    <input type="text" id="name" placeholder="Your full name" />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="you@example.com" />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Create a password" />
+
+    <button onclick="createAccount()">Submit</button>
+
+    <div class="message" id="msgBox"></div>
+  </div>
+
+  <script>
+    function createAccount() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const msgBox = document.getElementById("msgBox");
+
+      if (!name || !email || !password) {
+        msgBox.textContent = "Please fill in all fields.";
+        msgBox.style.color = "red";
+        return;
+      }
+
+      if (!email.includes("@") || !email.includes(".")) {
+        msgBox.textContent = "Enter a valid email address.";
+        msgBox.style.color = "red";
+        return;
+      }
+
+      const pendingUsers = JSON.parse(localStorage.getItem("whiteLyonPendingUsers") || "[]");
+      const approvedUsers = JSON.parse(localStorage.getItem("whiteLyonUsers") || "{}");
+
+      const emailExists = pendingUsers.some(u => u.email === email) || approvedUsers[email];
+
+      if (emailExists) {
+        msgBox.textContent = "An account with this email already exists or is awaiting approval.";
+        msgBox.style.color = "orange";
+        return;
+      }
+
+      pendingUsers.push({ name, email, password, approved: false });
+      localStorage.setItem("whiteLyonPendingUsers", JSON.stringify(pendingUsers));
+
+      msgBox.textContent = "Account created! Awaiting admin approval.";
+      msgBox.style.color = "lightgreen";
+
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

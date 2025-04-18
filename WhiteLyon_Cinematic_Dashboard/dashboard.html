@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – WhiteLyon Productions</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <script defer src="dashboard.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <script>
+    const user = localStorage.getItem("loggedInUser");
+    if (!user) window.location.href = "index.html";
+  </script>
+  <header>
+    <div class="logo-title">
+      <img src="assets/logo.png" alt="Logo" />
+      <h1>WhiteLyon</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Home</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="inspiration.html">Inspiration</a></li>
+        <li><a href="finance.html">Finance</a></li>
+      </ul>
+    </nav>
+    <div class="profile-menu">
+      <button class="profile-icon" onclick="toggleDropdown()">👤 <span id="profileEmail">User</span></button>
+      <div class="dropdown" id="dropdownMenu">
+        <a href="#">View Profile</a>
+        <a href="#">Settings</a>
+        <a href="#" onclick="logout()">Log Out</a>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="welcome">🎬 Welcome back, <span id="welcomeUser">Crew</span>!</div>
+    <div class="grid">
+      <div class="card">
+        <h3>🎬 Featured Project</h3>
+        <p>A sci-fi short currently in post-production.</p>
+        <div class="progress"><div class="progress-bar"></div></div>
+        <img src="assets/project-echo.jpg" alt="Project Image" />
+      </div>
+      <div class="card">
+        <h3>✅ To-Do List</h3>
+        <ul id="todoList"></ul>
+        <input type="text" id="todoInput" placeholder="New task..." />
+        <button onclick="addTask()">Add Task</button>
+      </div>
+      <div class="card">
+        <h3>📅 Upcoming Schedule</h3>
+        <ul id="upcomingEventsList"><li>Loading events...</li></ul>
+      </div>
+      <div class="card">
+        <h3>📝 Quick Notes</h3>
+        <textarea id="quickNotes" placeholder="Write something..."></textarea>
+      </div>
+      <div class="card">
+        <h3>📊 Activity Log</h3>
+        <ul id="activityLog"><li>No recent activity yet.</li></ul>
+      </div>
+      <div class="card">
+        <h3>🔔 Latest Updates</h3>
+        <ul>
+          <li>🎧 New playlist added to Inspiration — Apr 8</li>
+          <li>🎬 Storyboard for Echo uploaded — Apr 9</li>
+          <li>📸 Camera test scheduled — Apr 11</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+  <button class="chat-icon" onclick="window.location.href='contacts.html'">💬</button>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finance – WhiteLyon Productions</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: rgba(17, 17, 17, 0.85);
+      --accent: #e50914;
+      --text: #f0f0f0;
+      --subtext: #bbb;
+      --green: #4caf50;
+      --red: #f44336;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      z-index: 1000;
+      border-bottom: 1px solid #222;
+    }
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-title img {
+      height: 40px;
+    }
+    .logo-title h1 {
+      font-size: 1.3rem;
+      color: white;
+    }
+    nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      padding: 0;
+      margin: 0;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+    nav ul li a:hover {
+      background: rgba(255, 215, 0, 0.05);
+      color: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+    }
+    .profile-menu {
+      position: relative;
+    }
+    .profile-icon {
+      cursor: pointer;
+      border: 2px solid white;
+      color: white;
+      background: transparent;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .profile-icon:hover {
+      box-shadow: 0 0 10px var(--accent);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 2.5rem;
+      background-color: #111;
+      border-radius: 8px;
+      padding: 1rem;
+      min-width: 160px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+    .dropdown a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+    }
+    .dropdown a:hover {
+      color: var(--accent);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .finance-summary {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .summary-card {
+      flex: 1;
+      background: var(--card);
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255,255,255,0.03);
+    }
+    .summary-card h3 {
+      margin: 0 0 1rem;
+    }
+    .summary-card strong {
+      font-size: 1.5rem;
+      display: block;
+    }
+    .finance-form {
+      background: var(--card);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .finance-form input, .finance-form select {
+      flex: 1 1 200px;
+      padding: 0.6rem;
+      background: #1c1c1c;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 5px;
+    }
+    .finance-form button {
+      background-color: var(--accent);
+      border: none;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .transaction-list {
+      margin-top: 2rem;
+    }
+    .transaction-list li {
+      background: #111;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 5px solid var(--accent);
+    }
+    .transaction-list .income { border-left-color: var(--green); }
+    .transaction-list .expense { border-left-color: var(--red); }
+    .remove-btn {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 5px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .remove-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+    #financeChart {
+      background: #111;
+      border-radius: 12px;
+      margin-top: 3rem;
+      padding: 1.5rem;
+      box-shadow: 0 0 15px rgba(255,255,255,0.03);
+    }
+  </style>
+</head>
+<body>
+<script>
+  const user = localStorage.getItem("loggedInUser");
+  if (!user) window.location.href = "index.html";
+</script>
+
+<header>
+  <div class="logo-title">
+    <img src="assets/logo.png" alt="WhiteLyon Logo" />
+    <h1>WhiteLyon Productions</h1>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="dashboard.html">Home</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contacts.html">Contacts</a></li>
+      <li><a href="inspiration.html">Inspiration</a></li>
+      <li><a href="finance.html">Finance</a></li>
+      <li><a href="todo.html">To-Do</a></li>
+    </ul>
+  </nav>
+  <div class="profile-menu">
+    <button class="profile-icon" onclick="toggleDropdown()">👤 <span id="profileEmail">User</span></button>
+    <div class="dropdown" id="dropdownMenu">
+      <a href="profile.html">View Profile</a>
+      <a href="#">Settings</a>
+      <a href="#" onclick="logout()">Log Out</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h2>💰 Finance Overview</h2>
+
+  <div class="finance-summary">
+    <div class="summary-card">
+      <h3>Total Balance</h3>
+      <strong id="totalBalance">£0.00</strong>
+    </div>
+    <div class="summary-card">
+      <h3>Total Income</h3>
+      <strong id="totalIncome">£0.00</strong>
+    </div>
+    <div class="summary-card">
+      <h3>Total Expenses</h3>
+      <strong id="totalExpenses">£0.00</strong>
+    </div>
+  </div>
+
+  <form class="finance-form" onsubmit="addTransaction(event)">
+    <select id="type">
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+    <input type="text" id="description" placeholder="Description" required />
+    <input type="number" id="amount" placeholder="Amount (£)" required step="0.01" />
+    <select id="category">
+      <option value="">Select Category</option>
+      <option value="Gear">Gear</option>
+      <option value="Talent">Talent</option>
+      <option value="Travel">Travel</option>
+      <option value="Location">Location</option>
+      <option value="Post-Production">Post-Production</option>
+      <option value="Marketing">Marketing</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
+
+  <ul class="transaction-list" id="transactionList">
+    <!-- Transactions appear here -->
+  </ul>
+
+  <canvas id="financeChart" height="140"></canvas>
+</main>
+
+<script>
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  localStorage.removeItem("rememberedUser");
+  window.location.href = "index.html";
+}
+
+function toggleDropdown() {
+  const menu = document.getElementById("dropdownMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+window.addEventListener("click", function(e) {
+  if (!e.target.closest(".profile-menu")) {
+    document.getElementById("dropdownMenu").style.display = "none";
+  }
+});
+
+if (localStorage.getItem("loggedInUser")) {
+  document.getElementById("profileEmail").textContent = localStorage.getItem("loggedInUser");
+}
+
+const transactionList = document.getElementById("transactionList");
+const totalBalance = document.getElementById("totalBalance");
+const totalIncome = document.getElementById("totalIncome");
+const totalExpenses = document.getElementById("totalExpenses");
+const ctx = document.getElementById('financeChart').getContext('2d');
+
+let chart;
+
+function loadTransactions() {
+  return JSON.parse(localStorage.getItem("whiteLyonFinance")) || [];
+}
+
+function saveTransactions(transactions) {
+  localStorage.setItem("whiteLyonFinance", JSON.stringify(transactions));
+}
+
+function addTransaction(e) {
+  e.preventDefault();
+  const type = document.getElementById("type").value;
+  const description = document.getElementById("description").value.trim();
+  const amount = parseFloat(document.getElementById("amount").value);
+  const category = document.getElementById("category").value;
+
+  if (!description || isNaN(amount)) return;
+
+  const transactions = loadTransactions();
+  transactions.push({
+    id: Date.now(),
+    type,
+    description,
+    amount,
+    category,
+    date: new Date().toLocaleDateString()
+  });
+
+  saveTransactions(transactions);
+  document.querySelector("form").reset();
+  renderTransactions();
+}
+
+function removeTransaction(id) {
+  const transactions = loadTransactions().filter(t => t.id !== id);
+  saveTransactions(transactions);
+  renderTransactions();
+}
+
+function renderTransactions() {
+  const transactions = loadTransactions();
+  transactionList.innerHTML = "";
+  let balance = 0;
+  let income = 0;
+  let expenses = 0;
+
+  transactions.forEach(t => {
+    const li = document.createElement("li");
+    li.classList.add(t.type);
+    li.innerHTML = `
+      <div>
+        <strong>${t.description}</strong><br>
+        <small>${t.date} • £${t.amount.toFixed(2)}${t.category ? " • " + t.category : ""}</small>
+      </div>
+      <button class="remove-btn" onclick="removeTransaction(${t.id})">×</button>
+    `;
+
+    transactionList.appendChild(li);
+
+    if (t.type === "income") {
+      balance += t.amount;
+      income += t.amount;
+    } else {
+      balance -= t.amount;
+      expenses += t.amount;
+    }
+  });
+
+  totalBalance.textContent = `£${balance.toFixed(2)}`;
+  totalIncome.textContent = `£${income.toFixed(2)}`;
+  totalExpenses.textContent = `£${expenses.toFixed(2)}`;
+
+  updateChart(income, expenses);
+}
+
+function updateChart(income, expenses) {
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Income', 'Expenses'],
+      datasets: [{
+        data: [income, expenses],
+        backgroundColor: ['#4caf50', '#f44336'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            color: 'white'
+          }
+        }
+      }
+    }
+  });
+}
+
+renderTransactions();
+</script>
+
+</body>
+</html>

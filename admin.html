@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin – Approve Accounts | WhiteLyon</title>
+  <style>
+    body {
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.5rem;
+    }
+
+    .user-card {
+      background: #111;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-left: 5px solid red;
+      border-radius: 6px;
+    }
+
+    .user-card p {
+      margin: 0.3rem 0;
+    }
+
+    .actions {
+      margin-top: 1rem;
+    }
+
+    .actions button {
+      background: red;
+      border: none;
+      padding: 0.4rem 1rem;
+      color: white;
+      margin-right: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .actions button:hover {
+      background: #cc0000;
+    }
+
+    .no-users {
+      text-align: center;
+      color: #888;
+      margin: 1rem 0;
+    }
+
+    .divider {
+      border-top: 1px dashed #333;
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛠 Admin Panel – Account Approvals</h1>
+
+  <div>
+    <div class="section-title">Pending Accounts</div>
+    <div id="pendingList"></div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Approved Users</div>
+    <div id="approvedList"></div>
+  </div>
+
+  <script>
+    const pendingList = document.getElementById("pendingList");
+    const approvedList = document.getElementById("approvedList");
+
+    let pendingUsers = JSON.parse(localStorage.getItem("whiteLyonPendingUsers") || "[]");
+    let approvedUsers = JSON.parse(localStorage.getItem("whiteLyonUsers") || "{}");
+
+    function renderPending() {
+      if (pendingUsers.length === 0) {
+        pendingList.innerHTML = "<p class='no-users'>No pending accounts.</p>";
+        return;
+      }
+
+      pendingList.innerHTML = pendingUsers.map((user, index) => `
+        <div class="user-card">
+          <p><strong>Name:</strong> ${user.name}</p>
+          <p><strong>Email:</strong> ${user.email}</p>
+          <div class="actions">
+            <button onclick="approveUser(${index})">Approve</button>
+            <button onclick="denyUser(${index})">Deny</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderApproved() {
+      const userEntries = Object.entries(approvedUsers);
+      if (userEntries.length === 0) {
+        approvedList.innerHTML = "<p class='no-users'>No approved users yet.</p>";
+        return;
+      }
+
+      approvedList.innerHTML = userEntries.map(([email, user]) => `
+        <div class="user-card">
+          <p><strong>Name:</strong> ${user.name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <div class="actions">
+            <button onclick="removeApproved('${email}')">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function approveUser(index) {
+      const user = pendingUsers[index];
+
+      approvedUsers[user.email] = {
+        name: user.name,
+        password: user.password,
+        approved: true,
+        profilePic: user.profilePic || ""
+      };
+
+      pendingUsers.splice(index, 1);
+      saveAll();
+      renderPending();
+      renderApproved();
+      alert(`${user.name} has been approved.`);
+    }
+
+    function denyUser(index) {
+      const user = pendingUsers[index];
+      if (confirm(`Are you sure you want to deny ${user.name}?`)) {
+        pendingUsers.splice(index, 1);
+        saveAll();
+        renderPending();
+      }
+    }
+
+    function removeApproved(email) {
+      if (confirm(`Are you sure you want to delete user: ${email}?`)) {
+        delete approvedUsers[email];
+        saveAll();
+        renderApproved();
+      }
+    }
+
+    function saveAll() {
+      localStorage.setItem("whiteLyonPendingUsers", JSON.stringify(pendingUsers));
+      localStorage.setItem("whiteLyonUsers", JSON.stringify(approvedUsers));
+    }
+
+    renderPending();
+    renderApproved();
+  </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do & Goals – WhiteLyon Productions</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #111;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-title img {
+      height: 50px;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav ul li a:hover {
+      color: red;
+    }
+
+    .logout {
+      color: red;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .todo-box, .goals-box {
+      background-color: #111;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .todo-box input {
+      width: 100%;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #222;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .todo-list, .goals-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .todo-list li,
+    .goals-list li {
+      background-color: #1a1a1a;
+      padding: 0.6rem;
+      margin-bottom: 0.5rem;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .todo-list li.completed {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    button {
+      background: red;
+      border: none;
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .goals-box textarea {
+      width: 100%;
+      padding: 1rem;
+      background: #222;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      resize: vertical;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .todo-box input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<script>
+  const user = localStorage.getItem("loggedInUser");
+  if (!user) window.location.href = "index.html";
+</script>
+
+<header>
+  <div class="logo-title">
+    <img src="assets/logo.png" alt="WhiteLyon Logo" />
+    <h1>WhiteLyon Productions</h1>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="dashboard.html">Home</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contacts.html">Contacts</a></li>
+      <li><a href="inspiration.html">Inspiration</a></li>
+      <li><a href="finance.html">Finance</a></li>
+      <li><a href="todo.html">To-Do</a></li>
+    </ul>
+  </nav>
+  <div><span class="logout" onclick="logout()">Log Out</span></div>
+</header>
+
+<main>
+  <h2>✅ To-Do & 🎯 Future Goals</h2>
+
+  <div class="todo-box">
+    <h3>Tasks</h3>
+    <input type="text" id="newTask" placeholder="Add a new task..." />
+    <ul class="todo-list" id="todoList"></ul>
+  </div>
+
+  <div class="goals-box">
+    <h3>Long-Term Goals</h3>
+    <textarea id="goalsTextarea" placeholder="Write your bigger picture ideas, goals or next phase plans..."></textarea>
+  </div>
+<script>
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("rememberedUser");
+    window.location.href = "index.html";
+  }
+
+  const taskInput = document.getElementById("newTask");
+  const todoList = document.getElementById("todoList");
+  const goalsTextarea = document.getElementById("goalsTextarea");
+
+  function loadTasks() {
+    const saved = JSON.parse(localStorage.getItem("whiteLyonToDos")) || [];
+    saved.forEach(task => addTask(task.text, task.completed));
+  }
+
+  function saveTasks() {
+    const tasks = Array.from(todoList.children).map(li => ({
+      text: li.querySelector("span").innerText,
+      completed: li.classList.contains("completed")
+    }));
+    localStorage.setItem("whiteLyonToDos", JSON.stringify(tasks));
+  }
+
+  function addTask(text, completed = false) {
+    const li = document.createElement("li");
+    const span = document.createElement("span");
+    span.innerText = text;
+    li.appendChild(span);
+
+    const btn = document.createElement("button");
+    btn.innerText = "✕";
+    btn.onclick = () => {
+      li.remove();
+      saveTasks();
+    };
+    li.appendChild(btn);
+
+    if (completed) li.classList.add("completed");
+
+    li.onclick = (e) => {
+      if (e.target.tagName !== "BUTTON") {
+        li.classList.toggle("completed");
+        saveTasks();
+      }
+    };
+
+    todoList.appendChild(li);
+    saveTasks();
+  }
+
+  taskInput.addEventListener("keypress", e => {
+    if (e.key === "Enter" && taskInput.value.trim() !== "") {
+      addTask(taskInput.value.trim());
+      taskInput.value = "";
+    }
+  });
+
+  // Load saved goals
+  goalsTextarea.value = localStorage.getItem("whiteLyonGoals") || "";
+
+  goalsTextarea.addEventListener("input", () => {
+    localStorage.setItem("whiteLyonGoals", goalsTextarea.value);
+  });
+
+  // Load tasks on page load
+  loadTasks();
+</script>
+</body>
+</html>
